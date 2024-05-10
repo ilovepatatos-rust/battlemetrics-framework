@@ -22,8 +22,11 @@
       <Reference Include="mscorlib">
         <HintPath>..\dependencies\mscorlib.dll</HintPath>
       </Reference>
-      <Reference Include="Newtonsoft.Json">
-        <HintPath>..\dependencies\Newtonsoft.Json.dll</HintPath>
+      <Reference Include="Oxide.Core">
+        <HintPath>..\dependencies\Oxide.Core.dll</HintPath>
+      </Reference>
+      <Reference Include="Oxide.References">
+        <HintPath>..\dependencies\Oxide.References.dll</HintPath>
       </Reference>
       <Reference Include="UnityEngine.CoreModule">
         <HintPath>..\dependencies\UnityEngine.CoreModule.dll</HintPath>
