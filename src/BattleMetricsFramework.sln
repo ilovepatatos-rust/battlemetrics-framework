@@ -1,0 +1,13 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleMetricsFramework", "BattleMetricsFramework\BattleMetricsFramework.csproj", "{4F7D415D-B726-453E-A163-F72BD0D3EB52}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4F7D415D-B726-453E-A163-F72BD0D3EB52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F7D415D-B726-453E-A163-F72BD0D3EB52}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

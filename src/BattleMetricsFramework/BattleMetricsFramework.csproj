@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net48</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <AssemblyName>Oxide.Ext.BattleMetricsFramework</AssemblyName>
+        <RootNamespace>Oxide.Ext.BattleMetricsFramework</RootNamespace>
+
+        <!-- removes the .pdb file from the output folder -->
+        <DebugType>embedded</DebugType>
+        <LangVersion>11</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Reference Include="Assembly-CSharp">
+        <HintPath>..\dependencies\Assembly-CSharp.dll</HintPath>
+      </Reference>
+      <Reference Include="Facepunch.UnityEngine">
+        <HintPath>..\dependencies\Facepunch.UnityEngine.dll</HintPath>
+      </Reference>
+      <Reference Include="mscorlib">
+        <HintPath>..\dependencies\mscorlib.dll</HintPath>
+      </Reference>
+      <Reference Include="Newtonsoft.Json">
+        <HintPath>..\dependencies\Newtonsoft.Json.dll</HintPath>
+      </Reference>
+      <Reference Include="UnityEngine.CoreModule">
+        <HintPath>..\dependencies\UnityEngine.CoreModule.dll</HintPath>
+      </Reference>
+      <Reference Include="UnityEngine.UnityWebRequestModule">
+        <HintPath>..\dependencies\UnityEngine.UnityWebRequestModule.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <!-- make all references non-private, so they won't be copied to the output folder -->
+    <Target Name="ClearReferenceCopyLocalPaths" AfterTargets="ResolveAssemblyReferences">
+        <ItemGroup>
+            <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
+        </ItemGroup>
+    </Target>
+
+    <!-- remove the .deps.json file from the output folder -->
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="if exist &quot;$(OutDir)*.deps.json&quot; del &quot;$(OutDir)*.deps.json&quot;" />
+    </Target>
+
+</Project>
