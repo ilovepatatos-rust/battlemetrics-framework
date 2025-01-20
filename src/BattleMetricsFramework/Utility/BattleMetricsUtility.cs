@@ -8,6 +8,16 @@ namespace Oxide.Ext.BattleMetricsFramework;
 [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public static class BattleMetricsUtility
 {
+    public static readonly Dictionary<ulong, float> PlayerToPlaytime = new();
+
+    public static void GetPlayerPlaytime(string token, ulong userID, Action<float> callback)
+    {
+        if (PlayerToPlaytime.TryGetValue(userID, out float playtime))
+            callback?.Invoke(playtime);
+
+        // TODO: query playtime on BM
+    }
+
     /// <summary>
     /// Returns a the list of servers owned by an organization.
     /// </summary>
