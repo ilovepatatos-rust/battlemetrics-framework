@@ -1,5 +1,6 @@
 ﻿using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
+using Oxide.Core;
 
 namespace Oxide.Ext.BattleMetricsFramework;
 
@@ -79,5 +80,32 @@ public static class JObjectEx
         }
 
         return session;
+    }
+
+    internal static bool TryCalculatePlaytimeThreaded(this JObject jObject, Action<int> callback)
+    {
+        if (jObject == null)
+            return false;
+
+        if (!jObject.TryGetValue("included", out JToken token))
+            return false;
+
+        if (token.Type != JTokenType.Array)
+            return false;
+
+        Task.Run(() =>
+        {
+            int playtime = 0;
+
+            foreach (JToken value in (JArray)token)
+            {
+                var meta = value?.Value<JObject>("meta");
+                playtime += meta?.Value<int>("timePlayed") ?? 0;
+            }
+
+            Interface.Oxide.NextTick(() => callback?.Invoke(playtime));
+        });
+
+        return true;
     }
 }

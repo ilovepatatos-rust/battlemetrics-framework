@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
+using Oxide.Core;
 using UnityEngine.Networking;
 
 namespace Oxide.Ext.BattleMetricsFramework;
@@ -8,15 +9,7 @@ namespace Oxide.Ext.BattleMetricsFramework;
 [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public static class BattleMetricsUtility
 {
-    public static readonly Dictionary<ulong, float> PlayerToPlaytime = new();
-
-    public static void GetPlayerPlaytime(string token, ulong userID, Action<float> callback)
-    {
-        if (PlayerToPlaytime.TryGetValue(userID, out float playtime))
-            callback?.Invoke(playtime);
-
-        // TODO: query playtime on BM
-    }
+    public static readonly Dictionary<ulong, int> PlayerToPlaytime = new();
 
     /// <summary>
     /// Returns a list of servers owned by an organization.
@@ -135,19 +128,78 @@ public static class BattleMetricsUtility
         });
     }
 
+    /// <summary>
+    /// Returns a user's playtime in seconds.
+    /// </summary>
+    /// <param name="token">BattleMetrics token.</param>
+    /// <param name="userID">User's steam64.</param>
+    /// <param name="callback">The callback to invoke on completion.</param>
+    public static void GetPlayerTotalPlaytime(string token, ulong userID, Action<int> callback)
+    {
+        if (PlayerToPlaytime.TryGetValue(userID, out int time))
+        {
+            callback?.Invoke(time);
+        }
+        else
+        {
+            GetPlayerTotalPlaytimeInternal(token, userID, playtime =>
+            {
+                PlayerToPlaytime[userID] = playtime;
+                callback?.Invoke(playtime);
+            });
+        }
+    }
+
+    private static void GetPlayerTotalPlaytimeInternal(string token, ulong userID, Action<int> callback)
+    {
+        GetPlayer(token, userID, jPlayer =>
+        {
+            if (jPlayer.TryParseBattleMetricsPlayerID(out string playerID))
+            {
+                string url = $"https://api.battlemetrics.com/players/{playerID}?include=server";
+                IEnumerator task = GetPlusParseAsJObject(token, url, jObject =>
+                {
+                    if (!jObject.TryCalculatePlaytimeThreaded(callback))
+                        callback?.Invoke(-1);
+                });
+
+                CoroutineUtility.StartCoroutine(task);
+            }
+            else
+            {
+                callback?.Invoke(-1);
+            }
+        });
+    }
+
     private static IEnumerator GetPlusParseAsJObject(string token, string url, Action<JObject> callback)
     {
-        JObject jObject = null;
+        if (token == null)
+            throw new ArgumentNullException(nameof(token));
 
-        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        if (url == null)
+            throw new ArgumentNullException(nameof(url));
+
+        if (callback == null)
+            throw new ArgumentNullException(nameof(callback));
+
+        using UnityWebRequest request = UnityWebRequest.Get(url);
+        request.SetRequestHeader("Authorization", $"Bearer {token}");
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
         {
-            request.SetRequestHeader("Authorization", $"Bearer {token}");
-            yield return request.SendWebRequest();
-
-            if (request.result == UnityWebRequest.Result.Success)
-                jObject = JObject.Parse(request.downloadHandler.text);
+            string json = request.downloadHandler.text;
+            Task.Run(() =>
+            {
+                JObject jObject = JObject.Parse(json);
+                Interface.Oxide.NextTick(() => callback.Invoke(jObject));
+            });
         }
-
-        callback?.Invoke(jObject);
+        else
+        {
+            callback.Invoke(null);
+        }
     }
 }
