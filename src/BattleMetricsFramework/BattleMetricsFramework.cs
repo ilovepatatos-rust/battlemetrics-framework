@@ -16,4 +16,9 @@ public class BattleMetricsFramework : Extension
     public override bool SupportsReloading => true;
 
     public BattleMetricsFramework(ExtensionManager manager) : base(manager) { }
+
+    public override IEnumerable<string> GetPreprocessorDirectives()
+    {
+        yield return "BATTLE_METRICS_FRAMEWORK";
+    }
 }

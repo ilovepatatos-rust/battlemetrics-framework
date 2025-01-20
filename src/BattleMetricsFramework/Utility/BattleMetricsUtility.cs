@@ -19,11 +19,11 @@ public static class BattleMetricsUtility
     }
 
     /// <summary>
-    /// Returns a the list of servers owned by an organization.
+    /// Returns a list of servers owned by an organization.
     /// </summary>
-    /// <param name="token">BattleMetrics token</param>
-    /// <param name="organizationID">BattleMetrics organization's id</param>
-    /// <param name="callback"></param>
+    /// <param name="token">BattleMetrics token.</param>
+    /// <param name="organizationID">BattleMetrics organization's id.</param>
+    /// <param name="callback">The callback to invoke on completion.</param>
     public static void GetOrganizationServers(string token, string organizationID, Action<JObject> callback)
     {
         IEnumerator task = GetOrganizationServersInternal(token, organizationID, callback);
@@ -37,11 +37,11 @@ public static class BattleMetricsUtility
     }
 
     /// <summary>
-    /// Returns the player information of BattleMetrics
+    /// Returns the player information of BattleMetrics.
     /// </summary>
-    /// <param name="token">BattleMetrics token</param>
-    /// <param name="userID">User's steam64</param>
-    /// <param name="callback"></param>
+    /// <param name="token">BattleMetrics token.</param>
+    /// <param name="userID">User's steam64.</param>
+    /// <param name="callback">The callback to invoke on completion.</param>
     public static void GetPlayer(string token, ulong userID, Action<JObject> callback)
     {
         IEnumerator task = GetBattleMetricsPlayer(token, userID, callback);
@@ -55,11 +55,11 @@ public static class BattleMetricsUtility
     }
 
     /// <summary>
-    /// Returns the server information of BattleMetrics
+    /// Returns the server information of BattleMetrics.
     /// </summary>
-    /// <param name="token">BattleMetrics token</param>
-    /// <param name="userID">User's steam64</param>
-    /// <param name="callback"></param>
+    /// <param name="token">BattleMetrics token.</param>
+    /// <param name="userID">User's steam64.</param>
+    /// <param name="callback">The callback to invoke on completion.</param>
     public static void GetPlayerSession(string token, ulong userID, Action<JObject> callback)
     {
         GetPlayer(token, userID, jPlayer =>
@@ -85,9 +85,9 @@ public static class BattleMetricsUtility
     /// <summary>
     /// Returns the player's current server, if any, otherwise returns null.
     /// </summary>
-    /// <param name="token">BattleMetrics token</param>
-    /// <param name="userID">User's steam64</param>
-    /// <param name="callback"></param>
+    /// <param name="token">BattleMetrics token.</param>
+    /// <param name="userID">User's steam64.</param>
+    /// <param name="callback">The callback to invoke on completion.</param>
     public static void GetPlayerCurrentServer(string token, ulong userID, Action<string> callback)
     {
         GetPlayer(token, userID, jPlayer =>
