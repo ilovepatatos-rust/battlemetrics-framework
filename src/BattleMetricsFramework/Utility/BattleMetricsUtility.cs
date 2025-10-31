@@ -25,7 +25,7 @@ public static class BattleMetricsUtility
 
     private static IEnumerator GetOrganizationServersInternal(string token, string organizationID, Action<JObject> callback)
     {
-        string url = $"https://api.battlemetrics.com/servers?filter[organizations]={organizationID}";
+        string url = $"https://api.battlemetrics.com/servers?filter[game]=rust&filter[organizations]={organizationID}&page[size]=100";
         yield return GetPlusParseAsJObject(token, url, callback);
     }
 
